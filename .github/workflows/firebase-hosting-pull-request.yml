@@ -14,10 +14,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # -- 追加 ここから --
-      - name: Install Flutter
-        run: git clone https://github.com/flutter/flutter.git
-      - name: Add path
-        run: echo "$(pwd)/flutter/bin" >> $GITHUB_PATH
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.19.0'
       - name: Download Flutter packages
         run: flutter pub get
       # -- 追加 ここまで --
