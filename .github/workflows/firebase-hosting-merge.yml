@@ -23,9 +23,12 @@ jobs:
         run: flutter pub get
       # -- 追加 ここまで --
       - run: flutter build web
+      - name: Check index.html
+        run: ls -l build/web/index.html
       - uses: FirebaseExtended/action-hosting-deploy@v0.7.0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FRIENDLYEATS_6010D }}
           channelId: live
           projectId: friendlyeats-6010d
+          entryPoint: build/web
