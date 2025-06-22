@@ -21,7 +21,7 @@ jobs:
       - name: Download Flutter packages
         run: flutter pub get
       # -- 追加 ここまで --
-      - run: flutter build web --target=build/web/main.dart
+      - run: flutter build web
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
