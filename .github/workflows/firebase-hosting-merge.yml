@@ -25,7 +25,7 @@ jobs:
       - name: Build Flutter web
         run: |
           set -e
-          flutter build web
+          flutter build web --verbose
 
       - name: Check build/web directory
         run: |
@@ -53,3 +53,7 @@ jobs:
           entryPoint: build/web
           expires: 7d
           firebaseToolsVersion: latest
+
+      - name: Show build logs
+        if: failure()
+        run: cat /home/runner/.cache/flutter/*/flutter*.log || true
