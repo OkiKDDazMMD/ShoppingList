@@ -22,7 +22,19 @@ jobs:
       - name: Download Flutter packages
         run: flutter pub get
       # -- 追加 ここまで --
-      - run: flutter build web
+      - name: Build Flutter web
+        run: |
+          set -e
+          flutter build web
+
+      - name: Check build/web directory
+        run: |
+          if [ ! -d build/web ]; then
+            echo "build/web not found! Flutter build failed."
+            exit 1
+          fi
+          ls -l build/web
+                  
       - name: Check index.html
         run: ls -l build/web/index.html
 
