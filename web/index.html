@@ -6,26 +6,26 @@
   <title>Friendly Eats</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="favicon.png">
-  <script>
-    function loadMainDartJs() {
-      var script = document.createElement('script');
-      script.src = 'main.dart.js';
-      document.body.appendChild(script);
-    }
-  </script>
 </head>
 <body>
+  <script src="flutter.js" defer></script> <!-- ★これと次の初期化スクリプトが重要！ -->
   <script>
-    if ('serviceWorker' in navigator) {
-    } else {
-      // Service workers not supported. Just drop the <script> tag.
-      loadMainDartJs();
-    }
+    // Flutterエンジンがロードされた後にアプリを初期化・実行するコード
+    window.addEventListener('load', function () {
+      _flutter.loader.loadEntrypoint({
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
+    });
   </script>
+  <!-- ... Firebase SDKs は通常 <head> か、上記スクリプトの前に置くことが多いですが、ここでは場所自体は直接的な問題ではありません。 ... -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script>
+  <script>    
     const firebaseConfig = {
           apiKey: "AIzaSyBIjgEC3Cu8c5X9UxhgmZzxeFnn8NceigI",
           authDomain: "friendlyeats-6010d.firebaseapp.com",
@@ -38,3 +38,5 @@
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
    </script>
+</body>
+</html>
