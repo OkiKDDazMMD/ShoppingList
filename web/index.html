@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    ...
+</head>
+<body>
+  <script>
+    if ('serviceWorker' in navigator) {
+    } else {
+      // Service workers not supported. Just drop the <script> tag.
+      loadMainDartJs();
+    }
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+          apiKey: "AIzaSyBIjgEC3Cu8c5X9UxhgmZzxeFnn8NceigI",
+          authDomain: "friendlyeats-6010d.firebaseapp.com",
+          projectId: "friendlyeats-6010d",
+          storageBucket: "friendlyeats-6010d.firebasestorage.app",
+          messagingSenderId: "1064013134599",
+          appId: "1:1064013134599:web:9a14d3c4962f4be44863a2",
+          measurementId: "G-36QDXF9CEL"
+      };
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+   </script>
