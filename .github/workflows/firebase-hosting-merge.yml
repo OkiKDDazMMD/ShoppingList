@@ -38,11 +38,6 @@ jobs:
       - name: Check index.html
         run: ls -l build/web/index.html
 
-      - name: Copy firebase.json to build/web
-        run: cp firebase.json build/web/
-      - name: Check firebase.json
-        run: ls -l build/web/firebase.json
-
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0.7.0
         with:
@@ -50,7 +45,6 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_FRIENDLYEATS_6010D  }}
           channelId: live
           projectId: friendlyeats-6010d
-          entryPoint: build/web
           expires: 7d
           firebaseToolsVersion: latest
 
