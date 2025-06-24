@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friendly Eats</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+  <script src="flutter.js" defer></script> <!-- ★これと次の初期化スクリプトが重要！ -->
+  <script>
+    // Flutterエンジンがロードされた後にアプリを初期化・実行するコード
+    window.addEventListener('load', function () {
+      _flutter.loader.loadEntrypoint({
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+  </script>
+  <!-- ... Firebase SDKs は通常 <head> か、上記スクリプトの前に置くことが多いですが、ここでは場所自体は直接的な問題ではありません。 ... -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script>    
+    const firebaseConfig = {
+          apiKey: "AIzaSyBIjgEC3Cu8c5X9UxhgmZzxeFnn8NceigI",
+          authDomain: "friendlyeats-6010d.firebaseapp.com",
+          projectId: "friendlyeats-6010d",
+          storageBucket: "friendlyeats-6010d.firebasestorage.app",
+          messagingSenderId: "1064013134599",
+          appId: "1:1064013134599:web:9a14d3c4962f4be44863a2",
+          measurementId: "G-36QDXF9CEL"
+      };
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+   </script>
+</body>
+</html>
