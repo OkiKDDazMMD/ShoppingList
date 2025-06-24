@@ -87,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
           stream: _counterDocRef.snapshots(),
           // ビルダー関数はストリームから新しいデータが来るたびに呼び出されます。
           builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            int currentCount = 0;
             // エラーが発生した場合の表示
             if (snapshot.hasError) {
               return Text('データの読み込み中にエラーが発生しました: ${snapshot.error}');
@@ -99,8 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
             // データが利用可能な場合
             // ドキュメントが存在するかどうかを確認します。
-            int currentCount = 0;
-            if (snapshot.hasData && snapshot.data!.exists) {
+            if (snapshot.hasData && snapshot.data!.exists && currentCount < 1001) {
               // ドキュメントのデータをMapとして取得します。
               final data = snapshot.data!.data() as Map<String, dynamic>?;
               // 'count' フィールドが存在し、数値であることを確認して値を取得します。
@@ -118,19 +118,23 @@ class _MyHomePageState extends State<MyHomePage> {
                   'ボタンを押した回数:',
                 ),
                 Text(
-                  '$currentCount',
+                  currentCount > 1000
+                      ? '1000回を超えました'
+                      : '$currentCount',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
+                if (currentCount < 1001)
+                  FloatingActionButton(
+                    onPressed: _incrementCounter,
+                    tooltip: 'Increment',
+                    child: const Icon(Icons.add),
+                  ),
               ],
             );
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: null,
     );
   }
 }
