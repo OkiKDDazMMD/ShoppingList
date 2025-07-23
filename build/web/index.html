@@ -142,7 +142,7 @@
                         engineInitializer.initializeEngine().then(function(appRunner) {
                             appRunner.runApp(); // Flutterアプリを実行
                             flutterAppStarted = true; // アプリ起動完了
-                            console.log('?? Flutterアプリが正常に起動しました！');
+                            console.log('🎉 Flutterアプリが正常に起動しました！');
                         });
                     }
                 });
@@ -158,11 +158,11 @@
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         // ユーザーがログインしている場合
-        console.log('? ログイン済みです。Flutterアプリを起動します。');
+        console.log('✅ ログイン済みです。Flutterアプリを起動します。');
         startFlutterApp(); // Flutterアプリ起動処理を呼び出す
       } else {
         // ユーザーがログインしていない場合
-        console.log('? ログインしていません。ログインフォームを表示します。');
+        console.log('❌ ログインしていません。ログインフォームを表示します。');
         loginContainer.style.display = 'block';
         flutterContainer.style.display = 'none';
         // もしFlutterアプリが既に起動していた場合（例: ログアウト時）、
@@ -187,11 +187,11 @@
           // ログイン成功！
           // onAuthStateChanged が自動的に検知して startFlutterApp を呼び出すので、
           // ここでは特に何もしなくても良いです。
-          console.log('?? ログインに成功しました！', userCredential.user);
+          console.log('🚀 ログインに成功しました！', userCredential.user);
         })
         .catch((error) => {
           // ログイン失敗
-          console.error('?? ログインエラー:', error);
+          console.error('⚠️ ログインエラー:', error);
           let errorMessage = 'ログインに失敗しました。';
           if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
               errorMessage = 'メールアドレスまたはパスワードが間違っています。';
