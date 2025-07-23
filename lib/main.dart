@@ -120,9 +120,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // UIはStreamBuilderによって自動的に更新されるため、
       // ここで setState やローカルのカウンターを更新する必要はありません。
       debugPrint('Firestoreのカウントをインクリメントしました！');
-    } catch (e) {
-      debugPrint('カウントの更新に失敗しました: $e');
-      // エラーハンドリングをここに追加できます。
+    } catch (e, stackTrace) {
+      debugPrint('❌ Firestore書き込みエラー: $e');
+      debugPrint('StackTrace: $stackTrace');
     }
   }
 
