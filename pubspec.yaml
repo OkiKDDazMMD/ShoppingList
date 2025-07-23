@@ -5,6 +5,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^2.30.0  # 追加
-  cloud_firestore: ^4.17.0 # 追加
-  firebase_auth: ^4.16.0 # 追加
+  firebase_core: ^3.13.1  # これを更新！
+  cloud_firestore: ^5.6.8 # これを更新！
+  firebase_auth: ^5.7.0  # これを更新！
