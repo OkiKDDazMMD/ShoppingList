@@ -1,42 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Friendly Eats</title>
+  <title>test count</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    /* 簡単なスタイリング */
+    #login-container {
+      font-family: sans-serif;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 2rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    #flutter-container {
+      /* 最初はFlutterの表示領域を隠しておく */
+      display: none;
+    }
+  </style>
 </head>
+
 <body>
+  <div id="login-container">
+    <h2>ログインしてください</h2>
+    <input type="email" id="email" placeholder="メールアドレス" required><br><br>
+    <input type="password" id="password" placeholder="パスワード" required><br><br>
+    <button id="login-button">ログイン</button>
+    <p id="login-error" style="color: red;"></p>
+  </div>
+
+  <div id="flutter-container"></div>
+
   <script src="flutter.js" defer></script> <!-- ★これと次の初期化スクリプトが重要！ -->
-  <script>
-    // Flutterエンジンがロードされた後にアプリを初期化・実行するコード
-    window.addEventListener('load', function () {
-      _flutter.loader.loadEntrypoint({
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
-    });
-  </script>
+
   <!-- ... Firebase SDKs は通常 <head> か、上記スクリプトの前に置くことが多いですが、ここでは場所自体は直接的な問題ではありません。 ... -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script>    
+
+  <script>
+    // Firebaseの初期化
     const firebaseConfig = {
-          apiKey: "AIzaSyBIjgEC3Cu8c5X9UxhgmZzxeFnn8NceigI",
-          authDomain: "friendlyeats-6010d.firebaseapp.com",
-          projectId: "friendlyeats-6010d",
-          storageBucket: "friendlyeats-6010d.firebasestorage.app",
-          messagingSenderId: "1064013134599",
-          appId: "1:1064013134599:web:9a14d3c4962f4be44863a2",
-          measurementId: "G-36QDXF9CEL"
-      };
-      firebase.initializeApp(firebaseConfig);
-      firebase.analytics();
-   </script>
+      apiKey: "AIzaSyBIjgEC3Cu8c5X9UxhgmZzxeFnn8NceigI",
+      authDomain: "friendlyeats-6010d.firebaseapp.com",
+      projectId: "friendlyeats-6010d",
+      storageBucket: "friendlyeats-6010d.firebasestorage.app",
+      messagingSenderId: "1064013134599",
+      appId: "1:1064013134599:web:9a14d3c4962f4be44863a2",
+      measurementId: "G-36QDXF9CEL"
+//      apiKey: "AIzaSyAIuhrG39cxUegCk29x3TjXtRdqDSQzjeQ",
+//      authDomain: "login-97952.firebaseapp.com",
+//      projectId: "login-97952",
+//      storageBucket: "login-97952.firebasestorage.app",
+//      messagingSenderId: "64352274407",
+//      appId: "1:64352274407:web:2c756aa1a4e8da074f1f42",
+//      measurementId: "G-7TFJ0M6N0B"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    // ▼▼▼ 変更点: ここからが主要なロジック ▼▼▼
+
+    const loginContainer = document.getElementById('login-container');
+    const flutterContainer = document.getElementById('flutter-container');
+
+    /**
+     * Flutterアプリを初期化して起動する関数
+     */
+    function startFlutterApp() {
+      // ログインフォームを隠し、Flutterのコンテナを表示
+      loginContainer.style.display = 'none';
+      flutterContainer.style.display = 'block';
+
+      window.addEventListener('load', function(ev) {
+        _flutter.loader.loadEntrypoint({
+          // Flutterアプリの描画先を #flutter-container に指定
+          hostElement: flutterContainer,
+          onEntrypointLoaded: function(engineInitializer) {
+            engineInitializer.initializeEngine().then(function(appRunner) {
+              appRunner.runApp();
+            });
+          }
+        });
+      });
+    }
+
+    /**
+     * Firebaseの認証状態を監視する
+     */
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        // ユーザーがログインしている場合
+        console.log('ログイン済みです。Flutterアプリを起動します。');
+        startFlutterApp();
+      } else {
+        // ユーザーがログインしていない場合
+        console.log('ログインしていません。ログインフォームを表示します。');
+        loginContainer.style.display = 'block';
+        flutterContainer.style.display = 'none';
+      }
+    });
+
+    /**
+     * ログインボタンのクリックイベント
+     */
+    const loginButton = document.getElementById('login-button');
+    loginButton.addEventListener('click', function() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const loginError = document.getElementById('login-error');
+      
+      loginError.textContent = ''; // エラーメッセージをクリア
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          // ログイン成功
+          // onAuthStateChangedが自動的に検知してstartFlutterAppを呼び出すので、ここでは何もしなくても良い
+          console.log('ログインに成功しました:', userCredential.user);
+        })
+        .catch((error) => {
+          // ログイン失敗
+          console.error('ログインエラー:', error);
+          loginError.textContent = 'メールアドレスまたはパスワードが間違っています。';
+        });
+    });
+    
+  </script>
+
 </body>
 </html>
