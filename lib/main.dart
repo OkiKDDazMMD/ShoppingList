@@ -123,6 +123,7 @@ class MyHomePage extends StatelessWidget {
 
 }
 
+/*
 class _MyHomePageState extends State<MyHomePage> {
   // Firestoreの特定のドキュメントへの参照を定義します。
   // これにより、何度もパスを指定する必要がなくなります。
@@ -227,4 +228,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
+*/
