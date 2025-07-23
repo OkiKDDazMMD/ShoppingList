@@ -7,3 +7,4 @@ dependencies:
     sdk: flutter
   firebase_core: ^2.30.0  # 追加
   cloud_firestore: ^4.17.0 # 追加
+  firebase_auth: ^4.16.0 # 追加

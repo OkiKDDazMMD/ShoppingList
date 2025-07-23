@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // FirebaseAuthをインポート！
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,58 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      // ここが一番重要な変更点です！
+      // FirebaseAuthの認証状態の変化を監視します。
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(), // 認証状態のストリーム
+        builder: (context, snapshot) {
+          // 接続状態が待機中（認証状態の確認中）の場合
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()), // ロード中のインジケーターを表示
+            );
+          }
+
+          // エラーが発生した場合
+          if (snapshot.hasError) {
+            return Scaffold(
+              body: Center(child: Text('認証エラー: ${snapshot.error}')),
+            );
+          }
+
+          // 認証データがnullでない（つまり、ユーザーがログインしている）場合
+          if (snapshot.hasData && snapshot.data != null) {
+            // ユーザーがログインしているので、Flutterアプリのメインコンテンツを表示
+            return const MyHomePage(title: 'Flutter Demo Home Page');
+          } else {
+            // ユーザーがログインしていない（またはログイン状態がまだ伝わっていない）場合
+            // この場合、通常はログイン画面を表示しますが、今回はindex.htmlでログインするため
+            // 単純にメッセージを表示するか、リロードを促す画面にします。
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'ログインが必要です。トップページからログインしてください。',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        // ブラウザの再読み込みを促すなど
+                        // location.reload(); // Webアプリの場合はこれも有効
+                        print('ログインページに戻るボタンが押されました。');
+                      },
+                      child: const Text('ログインページへ'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }

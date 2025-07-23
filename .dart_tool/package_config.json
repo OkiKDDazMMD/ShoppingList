@@ -62,6 +62,24 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "firebase_auth",
+      "rootUri": "file:///C:/Users/hiro/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth-4.16.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
+      "name": "firebase_auth_platform_interface",
+      "rootUri": "file:///C:/Users/hiro/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth_platform_interface-7.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "firebase_auth_web",
+      "rootUri": "file:///C:/Users/hiro/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_auth_web-5.8.13",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "firebase_core",
       "rootUri": "file:///C:/Users/hiro/AppData/Local/Pub/Cache/hosted/pub.dev/firebase_core-2.32.0",
       "packageUri": "lib/",
@@ -96,6 +114,18 @@
       "rootUri": "file:///G:/Users/Source/Firebase/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.7"
+    },
+    {
+      "name": "http_parser",
+      "rootUri": "file:///C:/Users/hiro/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "js",
+      "rootUri": "file:///C:/Users/hiro/AppData/Local/Pub/Cache/hosted/pub.dev/js-0.6.7",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
     },
     {
       "name": "leak_tracker",
@@ -184,6 +214,12 @@
     {
       "name": "test_api",
       "rootUri": "file:///C:/Users/hiro/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
+      "name": "typed_data",
+      "rootUri": "file:///C:/Users/hiro/AppData/Local/Pub/Cache/hosted/pub.dev/typed_data-1.4.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
