@@ -84,15 +84,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-//class MyHomePage extends StatelessWidget {
-//  const MyHomePage({super.key, required this.title});
+//class MyHomePage extends StatefulWidget {
+//  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key, required this.title});
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-/*  
+//  State<MyHomePage> createState() => _MyHomePageState();
+  
   Widget build(BuildContext context) {
     final DocumentReference counterRef = FirebaseFirestore.instance
         .collection('CollectionTest')
@@ -120,7 +120,7 @@ class MyHomePage extends StatefulWidget {
       ),
     );
   }
-  */
+
 }
 
 class _MyHomePageState extends State<MyHomePage> {
