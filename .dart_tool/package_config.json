@@ -239,12 +239,12 @@
       "name": "ShoppingList",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "3.3"
+      "languageVersion": "3.4"
     }
   ],
   "generator": "pub",
   "generatorVersion": "3.8.1",
   "flutterRoot": "file:///G:/Users/Source/Firebase/flutter",
-  "flutterVersion": "3.32.4",
+  "flutterVersion": "3.32.7",
   "pubCache": "file:///C:/Users/hiro/AppData/Local/Pub/Cache"
 }
