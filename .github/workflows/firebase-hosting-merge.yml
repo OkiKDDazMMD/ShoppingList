@@ -14,11 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Remove Flutter cache
+        run: rm -rf "$HOME/.flutter"
       # -- 追加 ここから --
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.4.0'
+          flutter-version: '3.5.0'
       - name: Download Flutter packages
         run: flutter pub get
       # -- 追加 ここまで --
@@ -51,3 +53,4 @@ jobs:
       - name: Show build logs
         if: failure()
         run: cat /home/runner/.cache/flutter/*/flutter*.log || true
+
