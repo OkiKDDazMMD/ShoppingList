@@ -9,6 +9,11 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <style>
     /* 簡単なスタイリング */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Flutterアプリが全画面表示される際にスクロールバーが出ないように */
+    }
     #login-container {
       font-family: sans-serif;
       position: absolute;
@@ -18,10 +23,44 @@
       padding: 2rem;
       border: 1px solid #ccc;
       border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      background-color: white;
+      z-index: 10; /* Flutterアプリの上に表示されるように */
+    }
+    #login-container input {
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 200px;
+    }
+    #login-container button {
+      padding: 0.75rem 1.5rem;
+      background-color: #4285F4; /* Google Blue */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    #login-container button:hover {
+      background-color: #357ae8;
+    }
+    #login-error {
+      margin-top: 1rem;
+      font-size: 0.9rem;
     }
     #flutter-container {
       /* 最初はFlutterの表示領域を隠しておく */
       display: none;
+      /* Flutterアプリのコンテンツが表示されるので、画面全体を使うようにする */
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5; /* ログインフォームの下に表示されるように */
     }
   </style>
 </head>
@@ -36,8 +75,6 @@
   </div>
 
   <div id="flutter-container"></div>
-
-  <script src="flutter.js" defer></script> <!-- ★これと次の初期化スクリプトが重要！ -->
 
   <!-- ... Firebase SDKs は通常 <head> か、上記スクリプトの前に置くことが多いですが、ここでは場所自体は直接的な問題ではありません。 ... -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -55,41 +92,64 @@
       messagingSenderId: "1064013134599",
       appId: "1:1064013134599:web:9a14d3c4962f4be44863a2",
       measurementId: "G-36QDXF9CEL"
-//      apiKey: "AIzaSyAIuhrG39cxUegCk29x3TjXtRdqDSQzjeQ",
-//      authDomain: "login-97952.firebaseapp.com",
-//      projectId: "login-97952",
-//      storageBucket: "login-97952.firebasestorage.app",
-//      messagingSenderId: "64352274407",
-//      appId: "1:64352274407:web:2c756aa1a4e8da074f1f42",
-//      measurementId: "G-7TFJ0M6N0B"
     };
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
 
     // ▼▼▼ 変更点: ここからが主要なロジック ▼▼▼
-
+    // DOM要素の参照を取得
     const loginContainer = document.getElementById('login-container');
     const flutterContainer = document.getElementById('flutter-container');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginButton = document.getElementById('login-button');
+    const loginError = document.getElementById('login-error');
+
+    let flutterScriptsLoaded = false; // FlutterのJSファイルがロードされたかどうかのフラグ
+    let flutterAppStarted = false;    // Flutterアプリ自体が起動されたかどうかのフラグ
 
     /**
      * Flutterアプリを初期化して起動する関数
      */
     function startFlutterApp() {
-      // ログインフォームを隠し、Flutterのコンテナを表示
-      loginContainer.style.display = 'none';
-      flutterContainer.style.display = 'block';
+        if (flutterAppStarted) {
+            // アプリが既に起動済みなら、表示を切り替えるだけでOK
+            loginContainer.style.display = 'none';
+            flutterContainer.style.display = 'block';
+            return;
+        }
 
-      window.addEventListener('load', function(ev) {
-        _flutter.loader.loadEntrypoint({
-          // Flutterアプリの描画先を #flutter-container に指定
-          hostElement: flutterContainer,
-          onEntrypointLoaded: function(engineInitializer) {
-            engineInitializer.initializeEngine().then(function(appRunner) {
-              appRunner.runApp();
-            });
-          }
-        });
-      });
+        // ログインフォームを隠し、Flutterのコンテナを表示
+        loginContainer.style.display = 'none';
+        flutterContainer.style.display = 'block';
+
+        // Flutterのスクリプトがまだロードされていなければ、動的にロードする
+        if (!flutterScriptsLoaded) {
+            // flutter.js を動的にロード
+            const flutterJsScript = document.createElement('script');
+            flutterJsScript.src = 'flutter.js'; // `flutter build web`で生成される`flutter.js`のパス
+            flutterJsScript.defer = true; // 遅延ロード
+            
+            // flutter.jsがロード完了したときに実行される処理
+            flutterJsScript.onload = () => {
+                flutterScriptsLoaded = true; // ロード済みフラグを立てる
+
+                // `flutter.js`がロードされると`_flutter.loader`が利用可能になります。
+                // ここでFlutterのエントリポイントをロードして、アプリを起動します。
+                _flutter.loader.loadEntrypoint({
+                    hostElement: flutterContainer, // Flutterアプリを表示するHTML要素
+                    onEntrypointLoaded: function(engineInitializer) {
+                        engineInitializer.initializeEngine().then(function(appRunner) {
+                            appRunner.runApp(); // Flutterアプリを実行
+                            flutterAppStarted = true; // アプリ起動完了
+                            console.log('?? Flutterアプリが正常に起動しました！');
+                        });
+                    }
+                });
+            };
+            // 生成したスクリプトタグを<body>の最後に追加して、ロードを開始
+            document.body.appendChild(flutterJsScript);
+        }
     }
 
     /**
@@ -98,37 +158,49 @@
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         // ユーザーがログインしている場合
-        console.log('ログイン済みです。Flutterアプリを起動します。');
-        startFlutterApp();
+        console.log('? ログイン済みです。Flutterアプリを起動します。');
+        startFlutterApp(); // Flutterアプリ起動処理を呼び出す
       } else {
         // ユーザーがログインしていない場合
-        console.log('ログインしていません。ログインフォームを表示します。');
+        console.log('? ログインしていません。ログインフォームを表示します。');
         loginContainer.style.display = 'block';
         flutterContainer.style.display = 'none';
+        // もしFlutterアプリが既に起動していた場合（例: ログアウト時）、
+        // その表示を隠すためにflutterContainerをdisplay:noneにしています。
+        // Flutterアプリ自体を完全に停止させる必要がある場合は、より複雑な対応が必要です。
+        // 通常はFlutterアプリ内でログアウトを検知し、適切な画面に遷移させるのが良いでしょう。
       }
     });
 
     /**
      * ログインボタンのクリックイベント
      */
-    const loginButton = document.getElementById('login-button');
     loginButton.addEventListener('click', function() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const loginError = document.getElementById('login-error');
+      const email = emailInput.value;
+      const password = passwordInput.value;
       
       loginError.textContent = ''; // エラーメッセージをクリア
 
+      // Firebase Authenticationでサインインを試みる
       firebase.auth().signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-          // ログイン成功
-          // onAuthStateChangedが自動的に検知してstartFlutterAppを呼び出すので、ここでは何もしなくても良い
-          console.log('ログインに成功しました:', userCredential.user);
+          // ログイン成功！
+          // onAuthStateChanged が自動的に検知して startFlutterApp を呼び出すので、
+          // ここでは特に何もしなくても良いです。
+          console.log('?? ログインに成功しました！', userCredential.user);
         })
         .catch((error) => {
           // ログイン失敗
-          console.error('ログインエラー:', error);
-          loginError.textContent = 'メールアドレスまたはパスワードが間違っています。';
+          console.error('?? ログインエラー:', error);
+          let errorMessage = 'ログインに失敗しました。';
+          if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+              errorMessage = 'メールアドレスまたはパスワードが間違っています。';
+          } else if (error.code === 'auth/invalid-email') {
+              errorMessage = '無効なメールアドレスです。';
+          } else if (error.code === 'auth/user-disabled') {
+              errorMessage = 'このアカウントは無効になっています。';
+          }
+          loginError.textContent = errorMessage; // エラーメッセージを表示
         });
     });
     
