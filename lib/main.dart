@@ -175,12 +175,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       : '$currentCount',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
-                if (currentCount < 1001)
-                  FloatingActionButton(
+                  const SizedBox(height: 20),
+                  ElevatedButton(
                     onPressed: _incrementCounter,
-                    tooltip: 'Increment',
-                    child: const Icon(Icons.add),
+                    child: const Text('+ ボタン'),
                   ),
+
+//                if (currentCount < 1001)
+//                  FloatingActionButton(
+//                    onPressed: _incrementCounter,
+//                    tooltip: 'Increment',
+//                    child: const Icon(Icons.add),
+//                  ),
               ],
             );
           },
