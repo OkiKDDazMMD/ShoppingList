@@ -84,12 +84,41 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+//class MyHomePage extends StatefulWidget {
+//  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key, required this.title});
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+//  State<MyHomePage> createState() => _MyHomePageState();
+  Widget build(BuildContext context) {
+    final DocumentReference counterRef = FirebaseFirestore.instance
+        .collection('CollectionTest')
+        .doc('DocumentTest');
+
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            debugPrint("✅ Button pressed");
+            try {
+              await counterRef.set(
+                {'count': FieldValue.increment(1)},
+                SetOptions(merge: true),
+              );
+              debugPrint('✅ Firestore updated');
+            } catch (e, st) {
+              debugPrint('❌ Firestore error: $e');
+              debugPrint('StackTrace: $st');
+            }
+          },
+          child: const Text('Increment Count'),
+        ),
+      ),
+    );
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
