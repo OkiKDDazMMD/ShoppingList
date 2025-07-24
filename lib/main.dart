@@ -225,8 +225,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: const TextStyle(fontSize: 16),
                 ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
+                  FloatingActionButton(
                     onPressed: _incrementCounter,
+                    tooltip: 'Increment',
                     child: const Text('+ボタン'),
                   ),
 
