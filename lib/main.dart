@@ -87,42 +87,11 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
-//class MyHomePage extends StatelessWidget {
-//  const MyHomePage({super.key, required this.title});
   final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
-  
-/*
-  Widget build(BuildContext context) {
-    final DocumentReference counterRef = FirebaseFirestore.instance
-        .collection('CollectionTest')
-        .doc('DocumentTest');
 
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            debugPrint("✅ Button pressed");
-            try {
-              await counterRef.set(
-                {'count': FieldValue.increment(1)},
-                SetOptions(merge: true),
-              );
-              debugPrint('✅ Firestore updated');
-            } catch (e, st) {
-              debugPrint('❌ Firestore error: $e');
-              debugPrint('StackTrace: $st');
-            }
-          },
-          child: const Text('Increment Count'),
-        ),
-      ),
-    );
-  }
-*/
 }
 
 
@@ -175,68 +144,60 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        // StreamBuilderを使ってFirestoreのドキュメントの変更をリアルタイムで監視します。
-        child: StreamBuilder<DocumentSnapshot>(
-          // 監視するストリームを指定します。ここでは特定のドキュメントのスナップショットです。
-          stream: _counterDocRef.snapshots(),
-          // ビルダー関数はストリームから新しいデータが来るたびに呼び出されます。
-          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            int currentCount = 0;
-            // エラーが発生した場合の表示
-            if (snapshot.hasError) {
-              return Text('データの読み込み中にエラーが発生しました: ${snapshot.error}');
-            }
-
-            // データがまだロード中の場合の表示
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("ロード中...");
-            }
-
-            // データが利用可能な場合
-            // ドキュメントが存在するかどうかを確認します。
-            if (snapshot.hasData && snapshot.data!.exists && currentCount < 1001) {
-              // ドキュメントのデータをMapとして取得します。
-              final data = snapshot.data!.data() as Map<String, dynamic>?;
-              // 'count' フィールドが存在し、数値であることを確認して値を取得します。
-              if (data != null && data.containsKey('count')) {
-                // Firestoreの数値は 'num' 型で返されることがあるため、.toInt() で int に変換します。
-                currentCount = (data['count'] as num).toInt();
-              }
-            }
-            // ドキュメントが存在しない（まだ誰もカウントしていない）場合、currentCount はデフォルトの 0 のままです。
-
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[                
-                const Text(
-                  'ボタンを押した回数:',
-                ),
-                Text(
-                  '$currentCount',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                  /*
-                  currentCount > 1000
-                      ? '1000回を超えました'
-                  */
-                ),
-                Text(
-                  statusMessage,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16),
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            // ここにstatusMessageを表示（StreamBuilderの外）
+            Text(
+              statusMessage,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            // StreamBuilderを使ってFirestoreのドキュメントの変更をリアルタイムで監視します。
+            StreamBuilder<DocumentSnapshot>(
+              // 監視するストリームを指定します。ここでは特定のドキュメントのスナップショットです。
+              stream: _counterDocRef.snapshots(),
+              // ビルダー関数はストリームから新しいデータが来るたびに呼び出されます。
+              builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                int currentCount = 0;
+                // エラーが発生した場合の表示
+                if (snapshot.hasError) {
+                  return Text('データの読み込み中にエラーが発生しました: ${snapshot.error}');
+                }
+                // データがまだロード中の場合の表示
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text("ロード中...");
+                }
+                // データが利用可能な場合
+                // ドキュメントが存在するかどうかを確認します。
+                if (snapshot.hasData && snapshot.data!.exists && currentCount < 1001) {
+                  // ドキュメントのデータをMapとして取得します。
+                  final data = snapshot.data!.data() as Map<String, dynamic>?;
+                  // 'count' フィールドが存在し、数値であることを確認して値を取得します。
+                  if (data != null && data.containsKey('count')) {
+                    // Firestoreの数値は 'num' 型で返されることがあるため、.toInt() で int に変換します。
+                    currentCount = (data['count'] as num).toInt();
+                  }
+                }
+                return Column(
+                  children: [
+                  const Text('ボタンを押した回数:'),
+                  Text('$currentCount',
+                    style: Theme.of(context).textTheme.headlineMedium),
                   const SizedBox(height: 20),
                   FloatingActionButton(
                     onPressed: _incrementCounter,
                     tooltip: 'Increment',
                     child: const Text('+ ボタン'),
                   ),
-              ],
-            );
-          },
-        ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
-      floatingActionButton: null,
-    );
+    ),
+  );
   }
 }
-
