@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
           // 認証データがnullでない（つまり、ユーザーがログインしている）場合
           if (snapshot.hasData && snapshot.data != null) {
             // ユーザーがログインしているので、Flutterアプリのメインコンテンツを表示
+            print("ログインユーザー: ${snapshot.data?.uid}");
             return const MyHomePage(title: 'Flutter Demo Home Page');
           } else {
             // ユーザーがログインしていない（またはログイン状態がまだ伝わっていない）場合
@@ -84,15 +85,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//class MyHomePage extends StatefulWidget {
-//  const MyHomePage({Key? key, required this.title}) : super(key: key);
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+//class MyHomePage extends StatelessWidget {
+//  const MyHomePage({super.key, required this.title});
   final String title;
 
   @override
-//  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
   
+/*
   Widget build(BuildContext context) {
     final DocumentReference counterRef = FirebaseFirestore.instance
         .collection('CollectionTest')
@@ -120,10 +122,10 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
-
+*/
 }
 
-/*
+
 class _MyHomePageState extends State<MyHomePage> {
   // Firestoreの特定のドキュメントへの参照を定義します。
   // これにより、何度もパスを指定する必要がなくなります。
@@ -139,8 +141,13 @@ class _MyHomePageState extends State<MyHomePage> {
     // カウンターの読み込みはStreamBuilderに任せます。
   }
 
+  String statusMessage = 'ボタンを押してFirestoreを更新してください';
+
   // _incrementCounterメソッドを改善します。
   void _incrementCounter() async {
+    setState(() {
+      statusMessage = '✅ ボタンが押されました... Firestoreに接続中';
+    });
     try {
       // FieldValue.increment(1) を使用して、Firestore側で 'count' フィールドの値を1増加させます。
       // SetOptions(merge: true) を指定することで、
@@ -151,10 +158,13 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       // UIはStreamBuilderによって自動的に更新されるため、
       // ここで setState やローカルのカウンターを更新する必要はありません。
-      debugPrint('Firestoreのカウントをインクリメントしました！');
+      setState(() {
+        statusMessage = '✅ Firestoreが更新されました';
+      });
     } catch (e, stackTrace) {
-      debugPrint('❌ Firestore書き込みエラー: $e');
-      debugPrint('StackTrace: $stackTrace');
+      setState(() {
+        statusMessage = '❌ Firestore更新エラー: $e StackTrace: $stackTrace';
+      });
     }
   }
 
@@ -197,15 +207,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: <Widget>[                
                 const Text(
                   'ボタンを押した回数:',
                 ),
                 Text(
+                  '$currentCount',
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  /*
                   currentCount > 1000
                       ? '1000回を超えました'
-                      : '$currentCount',
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  */
+                ),
+                Text(
+                  statusMessage,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16),
                 ),
                   const SizedBox(height: 20),
                   ElevatedButton(
@@ -228,4 +245,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-*/
+
