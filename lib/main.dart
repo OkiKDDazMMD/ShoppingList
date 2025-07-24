@@ -20,66 +20,82 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo 1',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      // ここが一番重要な変更点です！
-      // FirebaseAuthの認証状態の変化を監視します。
+      title: 'Flutter Firebase Auth Demo',
       home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(), // 認証状態のストリーム
+        stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          // 接続状態が待機中（認証状態の確認中）の場合
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()), // ロード中のインジケーターを表示
-            );
+            return const Scaffold(body: Center(child: CircularProgressIndicator()));
           }
-
-          // エラーが発生した場合
-          if (snapshot.hasError) {
-            return Scaffold(
-              body: Center(child: Text('認証エラー: ${snapshot.error}')),
-            );
+          if (snapshot.hasData) {
+            return const MyHomePage(title: 'Flutter Firebase Auth Demo');
           }
-
-          // 認証データがnullでない（つまり、ユーザーがログインしている）場合
-          if (snapshot.hasData && snapshot.data != null) {
-            // ユーザーがログインしているので、Flutterアプリのメインコンテンツを表示
-            print("ログインユーザー: ${snapshot.data?.uid}");
-            return const MyHomePage(title: 'Flutter Demo Home Page');
-          } else {
-            // ユーザーがログインしていない（またはログイン状態がまだ伝わっていない）場合
-            // この場合、通常はログイン画面を表示しますが、今回はindex.htmlでログインするため
-            // 単純にメッセージを表示するか、リロードを促す画面にします。
-            return Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'ログインが必要です。トップページからログインしてください。',
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        // ブラウザの再読み込みを促すなど
-                        // location.reload(); // Webアプリの場合はこれも有効
-                        print('ログインページに戻るボタンが押されました。');
-                      },
-                      child: const Text('ログインページへ'),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
+          return const LoginScreen();
         },
+      ),
+    );
+  }
+}
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  String error = '';
+
+  Future<void> signIn() async {
+    setState(() => error = '');
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() => error = e.message ?? 'ログインに失敗しました');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('ログイン', style: TextStyle(fontSize: 24)),
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(labelText: 'メールアドレス'),
+              ),
+              TextField(
+                controller: passwordController,
+                decoration: const InputDecoration(labelText: 'パスワード'),
+                obscureText: true,
+              ),
+              if (error.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(error, style: const TextStyle(color: Colors.red)),
+                ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: signIn,
+                child: const Text('ログイン'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
