@@ -227,7 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _incrementCounter,
-                    child: const Text('+ ボタン'),
+                    child: const Text('+ボタン'),
                   ),
 
 //                if (currentCount < 1001)
