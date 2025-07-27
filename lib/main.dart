@@ -130,9 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // _incrementCounterメソッドを改善します。
   void _incrementCounter() async {
-    setState(() {
-      statusMessage = '✅ ボタンが押されました... Firestoreに接続中';
-    });
     try {
       // FieldValue.increment(1) を使用して、Firestore側で 'count' フィールドの値を1増加させます。
       // SetOptions(merge: true) を指定することで、
