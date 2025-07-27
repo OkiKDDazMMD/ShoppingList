@@ -130,9 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // _incrementCounterメソッドを改善します。
   void _incrementCounter() async {
-    setState(() {
-      statusMessage = '✅ ボタンが押されました... Firestoreに接続中';
-    });
     try {
       // FieldValue.increment(1) を使用して、Firestore側で 'count' フィールドの値を1増加させます。
       // SetOptions(merge: true) を指定することで、
@@ -163,12 +160,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // ここにstatusMessageを表示（StreamBuilderの外）
-            Text(
-              statusMessage,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16),
-            ),
             const SizedBox(height: 20),
             // StreamBuilderを使ってFirestoreのドキュメントの変更をリアルタイムで監視します。
             StreamBuilder<DocumentSnapshot>(
@@ -199,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Column(
                   children: [
                   const Text('ボタンを押した回数:'),
-                  Text('$currentCount',
+                  SelectableText('$currentCount',
                     style: Theme.of(context).textTheme.headlineMedium),
                   const SizedBox(height: 20),
                   FloatingActionButton(
